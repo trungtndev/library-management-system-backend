@@ -12,6 +12,7 @@ import java.util.Set;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
+    String password;
     String fullName;
     String email;
     LocalDate dateOfBirth;

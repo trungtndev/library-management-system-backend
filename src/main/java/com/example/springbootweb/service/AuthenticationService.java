@@ -4,6 +4,7 @@ import com.example.springbootweb.dto.respone.IntrospectResponse;
 import com.example.springbootweb.dto.request.AuthenticationRequest;
 import com.example.springbootweb.dto.request.IntrospectRequest;
 import com.example.springbootweb.dto.respone.AuthenticationResponse;
+import com.example.springbootweb.entity.Role;
 import com.example.springbootweb.entity.User;
 import com.example.springbootweb.enums.UserRole;
 import com.example.springbootweb.exception.AppException;
@@ -23,13 +24,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,8 +53,7 @@ public class AuthenticationService {
         if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-
-        var token = _generateToken(user);
+        String token = _generateToken(user);
 
         AuthenticationResponse response = new AuthenticationResponse();
         response.setAuthenticated(authenticated);
@@ -94,7 +92,7 @@ public class AuthenticationService {
                                 Instant.now().plusSeconds(3600).toEpochMilli() // 1 hour
                         )
                 )
-//                .claim("scope", _buildScope(user.getRoles()))
+                .claim("scope", _buildScope(user.getRoles()))
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
@@ -110,10 +108,18 @@ public class AuthenticationService {
         }
     }
 
-    private String _buildScope(Set<UserRole> roles) {
+    private String _buildScope(Set<Role> roles) {
         StringJoiner stringJoiner = new StringJoiner(" ");
 
-        roles.forEach(s -> {stringJoiner.add(s.getRole());});
+        roles.forEach(
+                role -> {
+                    stringJoiner.add(role.getName());
+                    if (!CollectionUtils.isEmpty(role.getPermissions()))
+                        role.getPermissions().forEach(
+                                permission -> stringJoiner.add(permission.getName())
+                        );
+                }
+        );
         return stringJoiner.toString();
     }
 }

@@ -2,6 +2,7 @@ package com.example.springbootweb.controller;
 
 
 import com.example.springbootweb.dto.request.UserCreationRequest;
+import com.example.springbootweb.dto.request.UserUpdateRequest;
 import com.example.springbootweb.dto.respone.ApiResponse;
 import com.example.springbootweb.dto.respone.UserResponse;
 import com.example.springbootweb.service.UserService;
@@ -68,7 +69,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserCreationRequest request) {
+    public ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
         UserResponse response = userService.updateUser(userId, request);
         return ApiResponse.<UserResponse>builder()
                 .code(200)

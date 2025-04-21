@@ -1,6 +1,5 @@
 package com.example.springbootweb.entity;
 
-import com.example.springbootweb.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,6 @@ public class User {
     LocalDate dateOfBirth;
     String email;
 
-//    @Enumerated(EnumType.STRING)
     @ManyToMany
     Set<Role> roles;
     LocalDate createdAt;

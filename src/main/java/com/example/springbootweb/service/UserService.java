@@ -1,13 +1,14 @@
 package com.example.springbootweb.service;
 
 import com.example.springbootweb.dto.request.UserCreationRequest;
+import com.example.springbootweb.dto.request.UserUpdateRequest;
 import com.example.springbootweb.dto.respone.UserResponse;
 import com.example.springbootweb.entity.Role;
 import com.example.springbootweb.entity.User;
-import com.example.springbootweb.enums.UserRole;
 import com.example.springbootweb.exception.AppException;
 import com.example.springbootweb.exception.ErrorCode;
 import com.example.springbootweb.mapper.UserMapper;
+import com.example.springbootweb.repository.RoleRepository;
 import com.example.springbootweb.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +32,7 @@ import java.util.Set;
 public class UserService {
 
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
@@ -86,13 +86,17 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse updateUser(String userId, UserCreationRequest userRequest) {
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(
                         () -> new AppException(ErrorCode.USER_NOT_FOUND)
                 );
-        UserResponse response = userMapper.toUserResponse(user);
-        return response;
+        userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user.setRoles(new HashSet<>(user.getRoles()));
+
+        return userMapper.toUserResponse(user);
     }
 
     public void deleteUser(String userId) {

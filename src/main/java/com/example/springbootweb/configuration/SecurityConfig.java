@@ -33,7 +33,6 @@ public class SecurityConfig {
     @Value("${jwt.signerKey}")
     private String SIGNER_STRING;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(
