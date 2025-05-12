@@ -16,5 +16,4 @@ public class UserUpdateRequest {
     String fullName;
     String email;
     LocalDate dateOfBirth;
-    Set<String> roles;
 }

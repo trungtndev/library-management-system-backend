@@ -1,16 +1,20 @@
 package com.example.springbootweb.dto.request;
 
-import com.example.springbootweb.entity.Permission;
+import com.example.springbootweb.entity.Genre;
+import jakarta.persistence.ManyToMany;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.Set;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleRequest {
-    String name;
+public class BookRequest {
+    String title;
+    String author;
     String description;
-    Set<String> permission;
+    int quantity;
+    Set<Genre> genre;
 }

@@ -7,7 +7,9 @@ import lombok.experimental.FieldDefaults;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder()
 @Getter
 @Setter
 public class ApiResponse<T> {
@@ -15,4 +17,5 @@ public class ApiResponse<T> {
     boolean success = true;
     String message;
     T result;
+
 }

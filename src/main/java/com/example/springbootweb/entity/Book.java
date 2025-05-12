@@ -1,13 +1,13 @@
 package com.example.springbootweb.entity;
 
-import com.example.springbootweb.enums.UserRole;
 import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
-
 
 @Entity
 @Getter
@@ -16,12 +16,17 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class Book {
     @Id
-    @Column(name = "name", unique = true, nullable = false, length = 32)
-    String name;
+    @Column(name = "id", unique = true, nullable = false, length = 36)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
+    String title;
+    String author;
     String description;
+    int quantity;
+    LocalDate createdAt;
 
     @ManyToMany
-    Set<Permission> permission;
+    Set<Genre> genre;
 }

@@ -2,6 +2,8 @@ package com.example.springbootweb.controller;
 
 import com.example.springbootweb.dto.request.AuthenticationRequest;
 import com.example.springbootweb.dto.request.IntrospectRequest;
+import com.example.springbootweb.dto.request.LogoutRequest;
+import com.example.springbootweb.dto.request.RefreshRequest;
 import com.example.springbootweb.dto.respone.ApiResponse;
 import com.example.springbootweb.dto.respone.AuthenticationResponse;
 import com.example.springbootweb.dto.respone.IntrospectResponse;
@@ -45,4 +47,23 @@ public class AuthenticationController {
                 .result(response)
                 .build();
     }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder()
+                .success(true)
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<AuthenticationResponse> refreshToken(@Valid @RequestBody RefreshRequest request)
+            throws ParseException, JOSEException {
+        AuthenticationResponse response = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .success(true)
+                .result(response)
+                .build();
+    }
+
 }

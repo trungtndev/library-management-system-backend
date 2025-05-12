@@ -1,7 +1,6 @@
 package com.example.springbootweb.dto.respone;
 
 import com.example.springbootweb.entity.Role;
-import com.example.springbootweb.enums.UserRole;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -14,10 +13,9 @@ import java.util.Set;
 public class UserResponse {
     String id;
     String username;
-    String password;
     String fullName;
     LocalDate dateOfBirth;
     String email;
-    Set<Role> roles;
+    Set<Role> role;
     LocalDate createdAt;
 }

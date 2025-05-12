@@ -1,24 +1,22 @@
 package com.example.springbootweb.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
+    @Column(name = "id", unique = true, nullable = false, length = 36)
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     String username;
@@ -26,8 +24,8 @@ public class User {
     String fullName;
     LocalDate dateOfBirth;
     String email;
+    LocalDate createdAt;
 
     @ManyToMany
-    Set<Role> roles;
-    LocalDate createdAt;
+    Set<Role> role;
 }

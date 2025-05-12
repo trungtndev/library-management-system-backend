@@ -8,10 +8,11 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum UserRole {
-    ADMIN("ADMIN"),
-    LIBRARIAN("LIBRARIAN"),
-    MEMBER("MEMBER");
+public enum LoanStatus {
+    PENDING("PENDING"),
+    LOST("LOST"),
+    LATE("LATE"),
+    RETURNED("RETURNED");
 
-    String role;
+    String status;
 }

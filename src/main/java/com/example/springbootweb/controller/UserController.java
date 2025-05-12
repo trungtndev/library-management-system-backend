@@ -7,19 +7,21 @@ import com.example.springbootweb.dto.respone.ApiResponse;
 import com.example.springbootweb.dto.respone.UserResponse;
 import com.example.springbootweb.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
     UserService userService;
 
     @PostMapping
@@ -35,17 +37,10 @@ public class UserController {
 
     @GetMapping
     public ApiResponse<List<UserResponse>> getAllUsers() {
-
-        var a = SecurityContextHolder .getContext().getAuthentication();
-
-        log.info("User: {}", a.getName());
-        a.getAuthorities().forEach(
-                role -> {log.info(role.getAuthority());}
-        );
         List<UserResponse> response = userService.getAllUsers();
-
         return ApiResponse.<List<UserResponse>>builder()
                 .code(200)
+                .success(true)
                 .result(response)
                 .build();
     }
@@ -64,6 +59,7 @@ public class UserController {
         UserResponse response = userService.getUserById(userId);
         return ApiResponse.<UserResponse>builder()
                 .code(200)
+                .success(true)
                 .result(response)
                 .build();
     }
@@ -73,20 +69,19 @@ public class UserController {
         UserResponse response = userService.updateUser(userId, request);
         return ApiResponse.<UserResponse>builder()
                 .code(200)
+                .success(true)
                 .result(response)
                 .build();
     }
 
     @DeleteMapping("/{userId}")
     public ApiResponse<String> deleteUser(@PathVariable String userId) {
-        try {
-            userService.deleteUser(userId);
-        } catch (Exception e) {
-            throw new RuntimeException("Error deleting user: " + e.getMessage());
-        }
+        userService.deleteUser(userId);
+
 
         return ApiResponse.<String>builder()
                 .code(200)
+                .success(true)
                 .result("User deleted successfully")
                 .build();
     }

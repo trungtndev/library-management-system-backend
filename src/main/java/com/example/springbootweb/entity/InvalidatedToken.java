@@ -1,21 +1,22 @@
 package com.example.springbootweb.entity;
 
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Permission {
+public class InvalidatedToken {
     @Id
-    String name;
-    String description;
+    String id; // token id
+    Date expiryTime;
+
 }

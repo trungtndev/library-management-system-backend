@@ -1,16 +1,15 @@
 package com.example.springbootweb.dto.request;
 
-import com.example.springbootweb.entity.Permission;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleRequest {
-    String name;
-    String description;
-    Set<String> permission;
+public class LogoutRequest {
+    String token;
 }

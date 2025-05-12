@@ -1,5 +1,6 @@
 package com.example.springbootweb.dto.request;
 
+import com.example.springbootweb.validator.DobConstraint;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +16,7 @@ public class UserCreationRequest {
     @Size(min = 8, message = "PASSWORD_INVALID_LENGTH")
     String password;
 
+    @DobConstraint(min = 10, message = "INVALID_DATE_OF_BIRTH")
     LocalDate dateOfBirth;
     String fullName;
     String email;

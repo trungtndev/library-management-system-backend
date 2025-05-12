@@ -29,11 +29,10 @@ public class RoleService {
     public RoleResponse create(RoleRequest request) {
         Role role = roleMapper.toRole(request);
 
-        List<Permission> permissions = permissionRepository.findAllById(request.getPermissions());
-        role.setPermissions(new HashSet<Permission>(permissions));
+        List<Permission> permissions = permissionRepository.findAllById(request.getPermission());
+        role.setPermission(new HashSet<>(permissions));
 
         role = roleRepository.save(role);
-        log.info("role: {}", role);
 
         return roleMapper.toRoleResponse(role);
     }

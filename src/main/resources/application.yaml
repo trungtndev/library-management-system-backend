@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://localhost:3306/library_test
     username: root
     password: root
   jpa:
@@ -15,4 +15,7 @@ server:
 
 
 jwt:
-  signerKey: "7ddz4s8e7nk2mgnljf1ziwcghl6yjx56"
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+  duration:
+    access-token: 300 # seconds
+    refresh-token: 60 # seconds

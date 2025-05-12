@@ -5,6 +5,7 @@ import com.example.springbootweb.dto.request.UserUpdateRequest;
 import com.example.springbootweb.dto.respone.UserResponse;
 import com.example.springbootweb.entity.Role;
 import com.example.springbootweb.entity.User;
+import com.example.springbootweb.enums.UserRole;
 import com.example.springbootweb.exception.AppException;
 import com.example.springbootweb.exception.ErrorCode;
 import com.example.springbootweb.mapper.UserMapper;
@@ -39,25 +40,30 @@ public class UserService {
     public UserResponse createUser(UserCreationRequest userRequest) {
 
         if (userRepository.existsByUsername(userRequest.getUsername())) {
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
 
         User user = userMapper.toUser(userRequest);
 
-        Set<Role> roles = new HashSet<>();
-//        roles.add(UserRole.USER);
 
-        user.setRoles(roles);
+        // add role
+        Role memberRole = roleRepository.findById(UserRole.MEMBER.name())
+                .orElseThrow(
+                        () -> new AppException(ErrorCode.ROLE_NOT_FOUND)
+                );
+        Set<Role> roles = new HashSet<>();
+        roles.add(memberRole);
+
+        user.setRole(roles);
         user.setCreatedAt(LocalDate.now());
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-
         user.setPassword(encodedPassword);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public List<UserResponse> getAllUsers() {
         return userRepository
                 .findAll()
@@ -67,6 +73,7 @@ public class UserService {
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN', 'MEMBER')")
     public UserResponse getUserById(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(
@@ -86,19 +93,20 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @PreAuthorize("hasAnyRole('MEMBER', 'ADMIN', 'LIBRARIAN')")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(
                         () -> new AppException(ErrorCode.USER_NOT_FOUND)
                 );
+
         userMapper.updateUser(user, request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setRole(new HashSet<>(user.getRole()));
 
-        user.setRoles(new HashSet<>(user.getRoles()));
-
-        return userMapper.toUserResponse(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public void deleteUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new AppException(ErrorCode.USER_NOT_FOUND)
