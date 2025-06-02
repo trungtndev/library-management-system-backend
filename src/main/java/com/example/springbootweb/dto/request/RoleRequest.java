@@ -1,6 +1,5 @@
 package com.example.springbootweb.dto.request;
 
-import com.example.springbootweb.entity.Permission;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;

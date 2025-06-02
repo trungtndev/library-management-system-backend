@@ -1,6 +1,7 @@
 package com.example.springbootweb.dto.respone;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 @Data

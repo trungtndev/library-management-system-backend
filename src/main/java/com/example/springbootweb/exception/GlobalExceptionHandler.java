@@ -2,12 +2,9 @@ package com.example.springbootweb.exception;
 
 
 import com.example.springbootweb.dto.respone.ApiResponse;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +23,8 @@ public class GlobalExceptionHandler {
 //        ApiResponse response = ApiResponse
 //                .builder()
 //                .code(errorCode.getCode())
-////                .message(errorCode.getMessage())
+
+    /// /                .message(errorCode.getMessage())
 //                .message(ex.getMessage())
 //                .success(false)
 //                .build();
@@ -36,8 +34,7 @@ public class GlobalExceptionHandler {
 //                .badRequest()
 //                .body(response);
 //    }
-
-    @ExceptionHandler(value = { AppException.class } )
+    @ExceptionHandler(value = {AppException.class})
     ResponseEntity<ApiResponse> handleAppException(AppException ex) {
         ErrorCode errorCode = ex.getErrorCode();
 
@@ -53,7 +50,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = { MethodArgumentNotValidException.class } )
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     ResponseEntity<ApiResponse> handleHandleValidation(MethodArgumentNotValidException ex) {
         String enumKey = Objects.requireNonNull(ex.getFieldError()).getDefaultMessage();
         ErrorCode errorCode = ErrorCode.valueOf(enumKey);

@@ -35,8 +35,8 @@ public class ApplicationInitConfig {
         return args -> {
 
             // Add data to the Permission table
-            for (RolePermission p: RolePermission.values()){
-                if (permissionRepository.findById(p.getPermission()).isEmpty()){
+            for (RolePermission p : RolePermission.values()) {
+                if (permissionRepository.findById(p.getPermission()).isEmpty()) {
                     Permission permission = Permission.builder()
                             .name(p.getPermission())
                             .build();
@@ -98,9 +98,8 @@ public class ApplicationInitConfig {
             }
 
 
-
             // Add data to the User table
-            if (userRepository.findByUsername("admin").isEmpty()){
+            if (userRepository.findByUsername("admin").isEmpty()) {
                 Role adminRole = Role.builder()
                         .name(UserRole.ADMIN.toString())
                         .build();

@@ -2,7 +2,8 @@ package com.example.springbootweb.dto.request;
 
 import com.example.springbootweb.validator.DobConstraint;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
