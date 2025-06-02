@@ -4,31 +4,34 @@ package com.example.springbootweb.controller;
 import com.example.springbootweb.dto.request.UserCreationRequest;
 import com.example.springbootweb.dto.request.UserUpdateRequest;
 import com.example.springbootweb.dto.respone.ApiResponse;
-import com.example.springbootweb.dto.respone.UserResponse;
+import com.example.springbootweb.dto.respone.PaginationResponse;
+import com.example.springbootweb.dto.respone.UserDetailResponse;
+import com.example.springbootweb.dto.respone.UserSummaryResponse;
 import com.example.springbootweb.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     UserService userService;
 
     @PostMapping
-    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
-        UserResponse response = userService.createUser(request);
+    public ApiResponse<UserDetailResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
+        UserDetailResponse response = userService.createUser(request);
 
-        return ApiResponse.<UserResponse>builder()
+        return ApiResponse.<UserDetailResponse>builder()
                 .code(200)
                 .success(true)
                 .result(response)
@@ -36,9 +39,15 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<List<UserResponse>> getAllUsers() {
-        List<UserResponse> response = userService.getAllUsers();
-        return ApiResponse.<List<UserResponse>>builder()
+    public ApiResponse<PaginationResponse<UserSummaryResponse>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+
+        PaginationResponse<UserSummaryResponse> response = userService.getAllUsers(pageable);
+        return ApiResponse.<PaginationResponse<UserSummaryResponse>>builder()
                 .code(200)
                 .success(true)
                 .result(response)
@@ -46,18 +55,18 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ApiResponse<UserResponse> getInfo() {
-        UserResponse response = userService.getInfo();
-        return ApiResponse.<UserResponse>builder()
+    public ApiResponse<UserDetailResponse> getInfo() {
+        UserDetailResponse response = userService.getInfo();
+        return ApiResponse.<UserDetailResponse>builder()
                 .code(200)
                 .result(response)
                 .build();
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<UserResponse> getUserById(@PathVariable String userId) {
-        UserResponse response = userService.getUserById(userId);
-        return ApiResponse.<UserResponse>builder()
+    public ApiResponse<UserDetailResponse> getUserById(@PathVariable String userId) {
+        UserDetailResponse response = userService.getUserById(userId);
+        return ApiResponse.<UserDetailResponse>builder()
                 .code(200)
                 .success(true)
                 .result(response)
@@ -65,9 +74,9 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
-        UserResponse response = userService.updateUser(userId, request);
-        return ApiResponse.<UserResponse>builder()
+    public ApiResponse<UserDetailResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+        UserDetailResponse response = userService.updateUser(userId, request);
+        return ApiResponse.<UserDetailResponse>builder()
                 .code(200)
                 .success(true)
                 .result(response)
@@ -77,12 +86,9 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ApiResponse<String> deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
-
-
         return ApiResponse.<String>builder()
                 .code(200)
                 .success(true)
-                .result("User deleted successfully")
                 .build();
     }
 }

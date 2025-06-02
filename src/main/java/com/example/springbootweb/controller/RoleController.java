@@ -3,7 +3,6 @@ package com.example.springbootweb.controller;
 
 import com.example.springbootweb.dto.request.RoleRequest;
 import com.example.springbootweb.dto.respone.ApiResponse;
-import com.example.springbootweb.dto.respone.PermissionResponse;
 import com.example.springbootweb.dto.respone.RoleResponse;
 import com.example.springbootweb.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping
-    ApiResponse<RoleResponse> create(@RequestBody RoleRequest request){
+    ApiResponse<RoleResponse> create(@RequestBody RoleRequest request) {
         RoleResponse response = roleService.create(request);
 
         return ApiResponse.<RoleResponse>builder()
@@ -31,16 +30,24 @@ public class RoleController {
     }
 
     @GetMapping
-    ApiResponse<List<RoleResponse>> getAll(){
+    ApiResponse<List<RoleResponse>> getAll() {
         List<RoleResponse> responses = roleService.getAll();
         return ApiResponse.<List<RoleResponse>>builder()
                 .result(responses)
                 .build();
     }
 
-    @DeleteMapping("/{permissionName}")
-    ApiResponse<Void> delete(@PathVariable String permissionName){
-        roleService.delete(permissionName);
+    @GetMapping("/{roleName}")
+    ApiResponse<RoleResponse> getRole(@PathVariable String roleName) {
+        RoleResponse response = roleService.getRole(roleName);
+        return ApiResponse.<RoleResponse>builder()
+                .result(response)
+                .build();
+    }
+
+    @DeleteMapping("/{roleName}")
+    ApiResponse<Void> deleteRole(@PathVariable String roleName) {
+        roleService.delete(roleName);
         return ApiResponse.<Void>builder()
                 .build();
     }

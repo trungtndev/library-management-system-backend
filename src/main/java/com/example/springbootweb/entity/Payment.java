@@ -1,6 +1,6 @@
 package com.example.springbootweb.entity;
 
-import com.example.springbootweb.enums.LoanStatus;
+import com.example.springbootweb.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,10 +14,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Loan {
+public class Payment {
     @Id
-    @Column(name = "id", unique = true, nullable = false, length = 36)
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", unique = true, nullable = false, length = 36)
     String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,15 +25,17 @@ public class Loan {
     User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
-    Book book;
-    LocalDate loanDate;
-    LocalDate dueDate;
-    LocalDate returnDate;
+    @JoinColumn(name = "loan_id", referencedColumnName = "id", nullable = false)
+    Loan loan;
 
-    LocalDate createdAt;
+    float amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    LoanStatus status;
+    PaymentStatus status;
+
+    LocalDate paymentDate;
+
+    String note;
+
 }

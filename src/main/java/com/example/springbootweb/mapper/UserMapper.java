@@ -2,11 +2,13 @@ package com.example.springbootweb.mapper;
 
 import com.example.springbootweb.dto.request.UserCreationRequest;
 import com.example.springbootweb.dto.request.UserUpdateRequest;
-import com.example.springbootweb.dto.respone.UserResponse;
+import com.example.springbootweb.dto.respone.UserDetailResponse;
+import com.example.springbootweb.dto.respone.UserSummaryResponse;
 import com.example.springbootweb.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -15,9 +17,9 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     User toUser(UserCreationRequest userRequest);
 
-//    @Mapping(target = "password", ignore = true)
-//    @Mapping(target = "role", ignore = true)
-    UserResponse toUserResponse(User user);
+    UserDetailResponse toUserDetailResponse(User user);
+
+    UserSummaryResponse toUserSummaryResponse(User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)

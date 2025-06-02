@@ -59,7 +59,7 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        user.getRole().forEach(role -> log.info(role.getName()));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         // Check if the password matches
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
@@ -83,8 +83,7 @@ public class AuthenticationService {
         boolean isVerified = true;
         try {
             _verifyToken(token, false);
-        }
-        catch (AppException e){
+        } catch (AppException e) {
             isVerified = false;
         }
 
@@ -174,7 +173,9 @@ public class AuthenticationService {
                 .issueTime(new Date())
                 .expirationTime(
                         new Date(
-                                Instant.now().plus(ACCESS_TOKEN_EXPIRATION_TIME, ChronoUnit.SECONDS).toEpochMilli() // 1 hour
+                                Instant.now()
+                                        .plus(ACCESS_TOKEN_EXPIRATION_TIME, ChronoUnit.SECONDS)
+                                        .toEpochMilli() // 1 hour
                         )
                 )
                 .jwtID(UUID.randomUUID().toString())

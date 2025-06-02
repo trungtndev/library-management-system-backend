@@ -7,6 +7,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 server:
   port: 8080
@@ -14,8 +19,11 @@ server:
     context-path: /library
 
 
+base-url: "http://localhost:8080/library"
+upload-dir: "./uploads"
+
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
   duration:
-    access-token: 300 # seconds
+    access-token: 3600 # seconds
     refresh-token: 60 # seconds

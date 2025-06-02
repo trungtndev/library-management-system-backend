@@ -6,6 +6,14 @@
 ### 2.1. Frontend
 
 ### 2.2. Backend với Spring Boot
+| HTTP Method | Endpoint                 | Chức năng                          | Quyền yêu cầu          |
+| ----------- | ------------------------ | ---------------------------------- | ---------------------- |
+| `POST`      | `/api/loans`             | Mượn sách (tạo đơn mượn mới)       | USER, LIBRARIAN        |
+| `PUT`       | `/api/loans/{id}/return` | Trả sách                           | USER, LIBRARIAN        |
+| `GET`       | `/api/loans/{id}`        | Xem chi tiết đơn mượn              | USER, LIBRARIAN, ADMIN |
+| `GET`       | `/api/loans/user/{id}`   | Lịch sử mượn của user cụ thể       | USER (self), LIBRARIAN |
+| `GET`       | `/api/loans`             | Lấy danh sách tất cả đơn mượn      | LIBRARIAN, ADMIN       |
+| `DELETE`    | `/api/loans/{id}`        | Xóa đơn mượn (nếu bị lỗi hoặc huỷ) | LIBRARIAN, ADMIN       |
 
 ### 2.3. Cơ sở Dữ liệu MySQL
 

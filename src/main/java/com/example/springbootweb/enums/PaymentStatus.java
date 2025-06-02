@@ -8,15 +8,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum LoanStatus {
-    PENDING("PENDING"),
-    APPROVED("APPROVED"),
-    REJECTED("REJECTED"),
-    RENEWED("RENEWED"),
-    CANCELLED("CANCELLED"),
-    LOST("LOST"),
-    LATE("LATE"),
-    RETURNED("RETURNED");
-
-    String status;
+public enum PaymentStatus {
+    PENDING,
+    COMPLETED,
+    REFUNDED,
+    CANCELLED
 }

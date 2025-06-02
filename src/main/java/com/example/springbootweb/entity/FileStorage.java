@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.util.Set;
-
 @Entity
 @Getter
 @Setter
@@ -14,24 +11,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Book {
+public class FileStorage {
     @Id
     @Column(name = "id", unique = true, nullable = false, length = 36)
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    String title;
-    String author;
-    String description;
-    int quantity;
-    LocalDate createdAt;
-
-    String imageUrl;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_storage_id", referencedColumnName = "id", nullable = false)
-    FileStorage fileStorage;
-
-
-    @ManyToMany
-    Set<Genre> genre;
+    String originalFileName;
+    String storedFileName;
+    String contentType;
+    String filePath;
+    String url;
+    long size;
 }

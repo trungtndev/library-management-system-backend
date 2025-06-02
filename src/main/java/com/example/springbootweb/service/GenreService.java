@@ -1,16 +1,11 @@
 package com.example.springbootweb.service;
 
-import com.example.springbootweb.dto.request.BookRequest;
 import com.example.springbootweb.dto.request.GenreRequest;
-import com.example.springbootweb.dto.respone.BookResponse;
 import com.example.springbootweb.dto.respone.GenreResponse;
-import com.example.springbootweb.entity.Book;
 import com.example.springbootweb.entity.Genre;
 import com.example.springbootweb.exception.AppException;
 import com.example.springbootweb.exception.ErrorCode;
-import com.example.springbootweb.mapper.BookMapper;
 import com.example.springbootweb.mapper.GenreMapper;
-import com.example.springbootweb.repository.BookRepository;
 import com.example.springbootweb.repository.GenreRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -64,6 +58,7 @@ public class GenreService {
 
         return genreMapper.toGenreResponse(genreRepository.save(genre));
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public void deleteGenre(String genreId) {
         Genre genre = genreRepository.findById(genreId)
