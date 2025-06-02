@@ -1,63 +1,201 @@
+# Database
 
-## 1. Kiến trúc Tổng quan
+## Main Entities
 
-## 2. Kiến trúc Chi tiết
+- **User**
+  - id (UUID, PK)
+  - username, password, fullName, dateOfBirth, email, createdAt
+  - roles: Many-to-Many with Role
 
-### 2.1. Frontend
+- **Role**
+  - name (PK)
+  - description
+  - permissions: Many-to-Many with Permission
 
-### 2.2. Backend với Spring Boot
-| HTTP Method | Endpoint                 | Chức năng                          | Quyền yêu cầu          |
-| ----------- | ------------------------ | ---------------------------------- | ---------------------- |
-| `POST`      | `/api/loans`             | Mượn sách (tạo đơn mượn mới)       | USER, LIBRARIAN        |
-| `PUT`       | `/api/loans/{id}/return` | Trả sách                           | USER, LIBRARIAN        |
-| `GET`       | `/api/loans/{id}`        | Xem chi tiết đơn mượn              | USER, LIBRARIAN, ADMIN |
-| `GET`       | `/api/loans/user/{id}`   | Lịch sử mượn của user cụ thể       | USER (self), LIBRARIAN |
-| `GET`       | `/api/loans`             | Lấy danh sách tất cả đơn mượn      | LIBRARIAN, ADMIN       |
-| `DELETE`    | `/api/loans/{id}`        | Xóa đơn mượn (nếu bị lỗi hoặc huỷ) | LIBRARIAN, ADMIN       |
+- **Permission**
+  - name (PK)
+  - description
 
-### 2.3. Cơ sở Dữ liệu MySQL
+- **Book**
+  - id (UUID, PK)
+  - title, author, description, quantity, createdAt, imageUrl
+  - fileStorage: One-to-One with FileStorage
+  - genres: Many-to-Many with Genre
 
-#### 2.3.1. Thiết kế Schema (Một số bảng chính)
-- **Bảng `book`:**
-    - `id` (Primary Key)
-    - `title`
-    - `author`
-    - `description`
-    - `quantity`
-    - `created_at`
+- **Genre**
+  - name (PK)
+  - description
 
-- **Bảng `user`:**
-    - `id` (Primary Key)
-    - `username`
-    - `password` (mã hóa)
-    - `full_name`
-    - `email`
-    - `phone`
-    - `created_at`
-    - `date_of_birth`
+- **Loan**
+  - id (UUID, PK)
+  - user: Many-to-One with User
+  - book: Many-to-One with Book
+  - loanDate, dueDate, returnDate, createdAt, status (enum)
 
-- **Bảng `loans`:**
-    - `id` (Primary Key)
-    - `user_id`
-    - `book_id` 
-    - `loan_date`
-    - `due_date`
-    - `return_date`
-    - `status` 
+- **Review**
+  - id (UUID, PK)
+  - book: Many-to-One with Book
+  - user: Many-to-One with User
+  - rating, comment, createdAt
 
-- **Bảng `payment`:**
-    - `id` (Primary Key)
-    - `user_id`
-    - `loan_id` 
-    - `amount`
-    - `payment_date`
-    - `method`
-    - `status` 
+- **Payment**
+  - id (UUID, PK)
+  - user: Many-to-One with User
+  - loan: Many-to-One with Loan
+  - amount, status (enum), paymentDate, note
 
-- **Bảng `review`:**
-    - `id` (Primary Key)
-    - `user_id`
-    - `book_id` 
-    - `rating`
-    - `comment`
-    - `created_at`
+- **FileStorage**
+  - id (UUID, PK)
+  - originalFileName, storedFileName, contentType, filePath, url, size
+
+- **InvalidatedToken**
+  - id (token id, PK)
+  - expiryTime
+
+# API for This App
+
+## Authentication
+
+- `POST /auth/login`
+  - Request (JSON):
+    ```json
+    {
+      "username": "string",
+      "password": "string"
+    }
+    ```
+  - Response: JWT access & refresh tokens
+  - No authentication required
+
+- `POST /auth/introspect`
+  - Request (JSON):
+    ```json
+    {
+      "token": "string"
+    }
+    ```
+  - Response: token validity info
+  - No authentication required
+
+- `POST /auth/logout`
+  - Request (JSON):
+    ```json
+    {
+      "refreshToken": "string"
+    }
+    ```
+  - Response: success/failure
+  - Requires JWT
+
+- `POST /auth/refresh`
+  - Request (JSON):
+    ```json
+    {
+      "refreshToken": "string"
+    }
+    ```
+  - Response: new access token
+  - No authentication required
+
+## User
+
+- `POST /users`
+  - Request (JSON):
+    ```json
+    {
+      "username": "string",
+      "password": "string",
+      "fullName": "string",
+      "dateOfBirth": "yyyy-MM-dd",
+      "email": "string"
+    }
+    ```
+  - Response: user detail
+  - No authentication required
+
+- `GET /users`
+  - List users (pagination, sorting)
+  - Requires JWT
+
+## Book
+
+- `POST /books`
+  - Request: multipart/form-data
+    - request: JSON string (BookCreationRequest)
+      ```json
+      {
+        "title": "string",
+        "author": "string",
+        "description": "string",
+        "quantity": number,
+        "genreNames": ["string", ...]
+      }
+      ```
+    - image: file
+  - Response: book detail
+  - Requires JWT
+
+- `GET /books`
+  - List books (pagination, search, sorting)
+  - Public
+
+## Loan
+
+- `POST /books/{bookId}/loans`
+  - Request (JSON):
+    ```json
+    {
+      "dueDate": "yyyy-MM-dd"
+    }
+    ```
+  - Response: loan detail
+  - Requires JWT
+
+- `GET /loans`
+  - List all loans (pagination, sorting)
+  - Requires JWT
+
+## Review
+
+- `POST /books/{bookId}/reviews`
+  - Request (JSON):
+    ```json
+    {
+      "rating": number,
+      "comment": "string"
+    }
+    ```
+  - Response: review detail
+  - Requires JWT
+
+- `GET /books/{bookId}/reviews`
+  - List reviews for a book (pagination, sorting)
+  - Public
+
+## Genre
+
+- `POST /genre`
+  - Request (JSON):
+    ```json
+    {
+      "name": "string",
+      "description": "string"
+    }
+    ```
+  - Response: genre detail
+  - Requires JWT
+
+- `GET /genre`
+  - List all genres
+  - Public
+
+- `GET /genre/{genreId}`
+  - Get genre by id
+  - Public
+
+## Notes
+
+- All endpoints returning sensitive or user-specific data require JWT authentication.
+- JWT is passed via the Authorization header as a Bearer token.
+- Standard response format: wrapped in `ApiResponse` with code, success, and result fields.
+
